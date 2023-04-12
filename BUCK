@@ -1,7 +1,11 @@
-# A list of available rules and their signatures can be found here: https://buck2.build/docs/generated/starlark/prelude/prelude.bzl
-
-genrule(
+rust_binary(
     name = "hello_world",
-    out = "out.txt",
-    cmd = "echo BUILT BY BUCK2> $OUT",
+    srcs = ["hello.rs"],
+    crate_root = "hello.rs",
 )
+
+# cxx_binary(
+#     name = "main",
+#     srcs = ["main.cpp"],
+#     link_style = "static",
+# )
