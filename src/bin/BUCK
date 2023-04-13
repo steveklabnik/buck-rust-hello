@@ -1,0 +1,8 @@
+rust_binary(
+    name = "hello_world",
+    srcs = ["main.rs"],
+    crate_root = "main.rs",
+    deps = [
+        "//src/lib:hello_world",
+    ],
+)

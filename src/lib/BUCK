@@ -1,0 +1,7 @@
+rust_library(
+    name = "hello_world",
+    srcs = glob(["**/*.rs"]),
+    crate_root = "print_hello.rs",
+    edition = "2021",
+    visibility = ["PUBLIC"],
+)

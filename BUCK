@@ -1,11 +1,5 @@
-rust_binary(
-    name = "hello_world",
-    srcs = ["hello.rs"],
-    crate_root = "hello.rs",
+alias(
+    name = "build",
+    actual = "//src/bin:hello_world",
+    visibility = ["PUBLIC"],
 )
-
-# cxx_binary(
-#     name = "main",
-#     srcs = ["main.cpp"],
-#     link_style = "static",
-# )
