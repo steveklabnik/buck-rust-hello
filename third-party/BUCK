@@ -1,0 +1,39 @@
+alias(
+    name = "semver",
+    actual = ":semver-1.0.17",
+    visibility = ["PUBLIC"],
+)
+
+http_archive(
+    name = "semver-1.0.17.crate",
+    sha256 = "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed",
+    strip_prefix = "semver-1.0.17",
+    urls = ["https://crates.io/api/v1/crates/semver/1.0.17/download"],
+    visibility = [],
+)
+
+rust_library(
+    name = "semver-1.0.17",
+    srcs = [":semver-1.0.17.crate"],
+    crate = "semver",
+    crate_root = "semver-1.0.17.crate/src/lib.rs",
+    edition = "2018",
+    features = [
+        "default",
+        "std",
+    ],
+    visibility = [],
+)
+
+rust_binary(
+    name = "semver-1.0.17-build-script-build",
+    srcs = [":semver-1.0.17.crate"],
+    crate = "build_script_build",
+    crate_root = "semver-1.0.17.crate/build.rs",
+    edition = "2018",
+    features = [
+        "default",
+        "std",
+    ],
+    visibility = [],
+)
