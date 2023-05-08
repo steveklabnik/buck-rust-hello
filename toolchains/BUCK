@@ -16,7 +16,6 @@ system_rust_toolchain(
 
 system_cxx_toolchain(
     name = "cxx",
-    linker = "link.exe",
     visibility = ["PUBLIC"],
 )
 

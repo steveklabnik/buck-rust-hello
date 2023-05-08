@@ -5,3 +5,6 @@ edition = "2021"
 
 [lib]
 path = "src/lib/print_hello.rs"
+
+[dependencies]
+semver = "1.0.17"

@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: ${{matrix.name || format('Rust {0}', matrix.rust)}}
+    runs-on: ${{matrix.os || 'ubuntu'}}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rust: nightly
+          - rust: beta
+          - rust: stable
+          - rust: 1.69.0
+          - name: Cargo on macOS
+            rust: nightly
+            os: macos
+          - name: Cargo on Windows (msvc)
+            rust: nightly-x86_64-pc-windows-msvc
+            os: windows
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{matrix.rust}}
+      - run: cargo check
+      - run: cargo run
+
+  buck:
+    name: Buck2 on ${{matrix.os == 'ubuntu' && 'Linux' || matrix.os == 'macos' && 'macOS' || matrix.os == 'windows' && 'Windows' || '???'}}
+    runs-on: ${{matrix.os}}-latest
+    if: github.event_name != 'pull_request'
+    strategy:
+      matrix:
+        os: [ubuntu, macos, windows]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rust-src
+      - uses: dtolnay/install-buck2@latest
+      - run: buck2 build ...
+      - run: buck2 run //src/bin:hello_world
+
+      - uses: actions/cache/restore@v3
+        id: cache
+        with:
+          path: ~/.cargo/bin/reindeer${{matrix.os == 'windows' && '.exe' || ''}}
+          key: ${{matrix.os}}-reindeer
+
+      - run: cargo install --git https://github.com/facebookincubator/reindeer reindeer
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - uses: actions/cache/save@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.cargo/bin/reindeer${{matrix.os == 'windows' && '.exe' || ''}}
+          key: ${{steps.cache.outputs.cache-primary-key}}
+
+      - run: reindeer buckify
+        working-directory: third-party
+        if: matrix.os == 'ubuntu'
+      - name: Check reindeer-generated BUCK file up to date
+        run: git diff --exit-code
+        if: matrix.os == 'ubuntu'

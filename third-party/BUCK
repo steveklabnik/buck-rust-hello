@@ -1,3 +1,6 @@
+load("@prelude//rust:cargo_buildscript.bzl", "buildscript_run")
+load("@prelude//rust:cargo_package.bzl", "cargo")
+
 alias(
     name = "semver",
     actual = ":semver-1.0.17",
@@ -12,24 +15,11 @@ http_archive(
     visibility = [],
 )
 
-rust_library(
+cargo.rust_library(
     name = "semver-1.0.17",
     srcs = [":semver-1.0.17.crate"],
     crate = "semver",
     crate_root = "semver-1.0.17.crate/src/lib.rs",
-    edition = "2018",
-    features = [
-        "default",
-        "std",
-    ],
-    visibility = [],
-)
-
-rust_binary(
-    name = "semver-1.0.17-build-script-build",
-    srcs = [":semver-1.0.17.crate"],
-    crate = "build_script_build",
-    crate_root = "semver-1.0.17.crate/build.rs",
     edition = "2018",
     features = [
         "default",

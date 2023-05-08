@@ -5,4 +5,5 @@ rust_binary(
     deps = [
         "//third-party:semver",
     ],
+    visibility = ["PUBLIC"],
 )
